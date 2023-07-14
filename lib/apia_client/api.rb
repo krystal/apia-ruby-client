@@ -15,7 +15,6 @@ module ApiaClient
 
     attr_reader :host
     attr_reader :headers
-    attr_reader :schema
 
     def initialize(host, **options)
       @host = host
@@ -35,14 +34,17 @@ module ApiaClient
       (@options[:namespace] || '').sub(/\A\/*/, '').sub(/\/*\z/, '')
     end
 
+    def schema
+      @schema ||= load_schema
+    end
+
     def schema?
       !!@schema
     end
 
     def load_schema
       response = request(Get.new('schema'))
-      @schema = ApiaSchemaParser::Schema.new(response.hash)
-      true
+      ApiaSchemaParser::Schema.new(response.hash)
     end
 
     def request(request)
@@ -125,9 +127,7 @@ module ApiaClient
     class << self
 
       def load(*args, **options)
-        api = new(*args, **options)
-        api.load_schema
-        api
+        new(*args, **options)
       end
 
     end
