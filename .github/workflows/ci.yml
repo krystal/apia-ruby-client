@@ -10,9 +10,6 @@ jobs:
         with:
           ruby-version: 2.7
 
-      - name: Configure Bundler
-        run: bundle config set rubygems.pkg.github.com "${{ secrets.KRYSTAL_GITHUB_PACKAGE_READ_KEY }}"
-
       - name: Install dependencies
         run: bundle install
 
@@ -34,9 +31,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby_version }}
-
-      - name: Configure Bundler
-        run: bundle config set rubygems.pkg.github.com "${{ secrets.KRYSTAL_GITHUB_PACKAGE_READ_KEY }}"
 
       - name: Install dependencies
         run: bundle install
@@ -69,9 +63,8 @@ jobs:
           chmod 0600 $HOME/.gem/credentials
           printf -- "---\n:rubygems_api_key: ${RUBYGEMS_API_KEY}\n" > $HOME/.gem/credentials
         env:
-          RUBYGEMS_API_KEY: ${{secrets.KRYSTAL_RUBYGEMS_API_KEY}}
+          RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
 
       - name: Publish to RubyGems
         run: |
           gem push *.gem
-
